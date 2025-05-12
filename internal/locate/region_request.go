@@ -707,6 +707,9 @@ func (s *RegionRequestSender) getRPCContext(
 		}
 		return s.replicaSelector.next(bo, req)
 	case tikvrpc.TiFlash:
+		if s.storeAddr != "" {
+			return &RPCContext{Addr: s.storeAddr}, nil
+		}
 		// Should ignore WN, because in disaggregated tiflash mode, TiDB will build rpcCtx itself.
 		return s.regionCache.GetTiFlashRPCContext(bo, regionID, true, LabelFilterNoTiFlashWriteNode)
 	case tikvrpc.TiDB:
